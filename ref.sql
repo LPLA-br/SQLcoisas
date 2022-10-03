@@ -1,5 +1,5 @@
---Comandos essenciais do mysql & mariadb
--- Referência BÁSICA
+------------------- SEÇÃO I -------------------
+-- DOS BANCOS DE DADOS E TABELAS --
 
 -- Criar banco de dados: CREATE DATABASE
 CREATE DATABASE IF NOT EXISTS Supermercado;
@@ -106,4 +106,27 @@ DROP TABLE IF EXISTS Produtos;
 -- Deletar o banco de dados.
 
 DROP DATABASE IF EXISTS Supermercado;
+
+------------------- SEÇÃO II -------------------
+-- DOS USUÁRIOS E CONTAS --
+-- apenas root ou um usuário poderoso pode operar aqui.
+-- localhost = 127.0.0.1
+
+CREATE USER IF NOT EXISTS "Marcolino"@"localhost" IDENTIFIED BY "senhaForte123";
+
+-- GRANT in Tables for a user.
+-- USE banco; para poder dar permissões de tabela abaixo ao novo usuário
+
+GRANT INSERT ON Tabela TO "Marcolino"@"localhost";
+GRANT UPDATE ( coluna1, coluna2 ) ON Tabela TO "Marcolino"@"localhost";
+
+-- principais permissões das tabelas:
+-- ALTER, CREATE, DELETE, DROP, INSERT, SELECT, UPDATE.
+-- principais perimissões das colunas
+-- INSERT (col_list), SELECT (), UPDATE ()
+
+-- Mostrar privilégios de um usuário
+SHOW GRANTS FOR "Marcolino"@"localhost";
+
+
 
