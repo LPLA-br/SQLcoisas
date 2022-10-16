@@ -6,19 +6,19 @@ CREATE DATABASE IF NOT EXISTS Supermercado;
 USE Supermercado; --trabalhando com Supermercado para próximos comandos.
 
 -- Criar Tabelas: CREATE TABLE
+-- auto_increment - automaticamente, um nova entrada terá o id incrementado.
 CREATE TABLE Fornecedores (
-	Cod_Fornec SMALLINT PRIMARY KEY,
+	Cod_Fornec SMALLINT PRIMARY KEY AUTO_INCREMENT,
 	Nome_Fornec VARCHAR(50)
 );
 
 CREATE TABLE Produtos (
 	ID_Prod SMALLINT PRIMARY KEY,
-	Nome_Prod VARCHAR(50) NOT NULL,
+	Nome_Prod VARCHAR(50) NOT NULL, --Ciquenta caracteres
 	Quant_Prod SMALLINT NOT NULL,
-	Preco_Prod DECIMAL(10,2),
+	Preco_Prod DECIMAL(10,2), --Dez dígitos inteiros e dois decimais
 	Cod_Fornec SMALLINT,
-	CONSTRAINT fk_cod_fornec FOREIGN KEY (Cod_Fornec)
-	REFERENCES Fornecedores(Cod_Fornec)
+	CONSTRAINT fk_cod_fornec FOREIGN KEY (Cod_Fornec) REFERENCES Fornecedores(Cod_Fornec)
 );
 
 -- Criará Produtos se ele não existe ainda.
