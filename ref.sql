@@ -1,4 +1,5 @@
--- Este código é uma referência.
+-- Este código é uma referência Não executável.
+-- LPLA-br 2022 - All rights reserved
 
 ------------------- SEÇÃO NULL -------------------
 
@@ -6,7 +7,6 @@
 --multiplicação,divisão e módulo = javascript
 
 --WHERE condição_lógica;
-
 --	=	igual a (comparação)
 --	<>	não igual a (comparação)
 --	>	maior que
@@ -16,24 +16,37 @@
 
 --MYSQL
 --	ALL
---	AND
+--	AND	operador lógico E
 --	ANY
 --	BETWEEN
---	EXISTS
---	IN
---	LIKE
---	NOT
---	OR
+--	EXISTS	existe(pode ter prefixo de negação:NOT IN)
+--	IN	está em(pode ter prefixo de negação:NOT IN)
+--	LIKE	expressões regulares SQL?
+--	NOT	operador lógico de NEGAÇÃO.
+--	OR	operador lógico de OU
 --	SOME
 
 --CONSTRAINTS (restrições)
 --	NOT NULL	valor obrigatório
---	UNIQUE		chave aternativa
---	PRIMARY KEY	chave primária
---	FOREIGN KEY	chave estrangeira
+--	UNIQUE		chave aternativa	opcional por padrão
+--	PRIMARY KEY	chave primária		obrigatório por padrão
+--	FOREIGN KEY	chave estrangeira	opcional por padrão
 --	CHECK
 --	DEFAULT
 --	CREATE INDEX
+
+--DOMINIOS
+--	CHAR(tamanhofixo)
+--	VARCHAR(tamanho)
+--	INT ou INTERGER
+--	SMALLINT
+--	NUMERIC(parteInteira,parteDecimal)
+--	REAL, DOUBLE PRECISION
+--	FLOAT(precisão)
+--
+--EXPRESSÕES REGULARES SQL
+--	% fuciona como * do globbing do shell bash
+--	_ fuciona como ? do globbing do shell bash
 
 ------------------- SEÇÃO I -------------------
 -- DOS BANCOS DE DADOS E TABELAS --
@@ -42,6 +55,7 @@
 
 -- Criar banco de dados: CREATE DATABASE
 CREATE DATABASE IF NOT EXISTS Supermercado;
+CREATE SCHEMA IF NOT EXISTS Example;
 
 -- USE define seu database de trabalho atual.
 USE Supermercado;
@@ -63,8 +77,7 @@ CREATE TABLE Produtos (
 	Cod_Fornec SMALLINT,
 	Cod_unico CHAR(5),
 	PRIMARY KEY (ID_Prod),
-	FOREIGN KEY (Cod_Fornec)
-		REFERENCES Fornecedores(Cod_Fornec),
+	FOREIGN KEY (Cod_Fornec) REFERENCES Fornecedores(Cod_Fornec),
 	UNIQUE(Cod_unico)
 );
 
@@ -73,6 +86,7 @@ SHOW TABLES FROM Supermercado;
 
 -- Descreve Tabelas de um database
 DESCRIBE Produtos;
+DESCRIBE Forncenecedores;
 
 -- Criará Produtos se ele não existe ainda.
 CREATE TABLE IF NOT EXISTS Produtos;
@@ -92,7 +106,7 @@ VALUES (100, "Monitor LCD", 12, 550.00, 1, "ak9ig"),
 
 ------------------------------------------ALTER TABLE
 
--- Adicionar Coluna (Atributo) em uma tabela.
+-- Adicionar Coluna em uma tabela.
 
 ALTER TABLE Produtos
 ADD Volume VARCHAR(10),
@@ -101,11 +115,10 @@ ADD Peso SMALLINT NOT NULL;
 -- Modificar definição da coluna.
 
 ALTER TABLE Produtos
-MODIFY COLUMN Preco_Prod DECIMAL(9,2);
+MODIFY COLUMN Preco_Prod DECIMAL(9,2) NOT NULL;
 
 ALTER TABLE Produtos
 MODIFY Preco_Prod DECIMAL(9,2);
-
 
 -- Deletar Coluna em uma tabela.
 
@@ -115,17 +128,29 @@ DROP COLUMN Peso;
 
 --------------------------------------------SELECT FROM
 
+--CONSULTAS
+
 -- Efetuar consulta (query), trazendo colunas específicas.
 
 SELECT Nome_Fornec FROM Fornecedores; 		--uma coluna especificas.
 SELECT Nome_Prod, Preco_Prod FROM Produtos; 	--2 colunas especificas.
 SELECT * FROM Produtos; 			--toda a tabela.
-SELECT DISTINCT Nome_Prod FROM Produtos; 	--retorna coluna retirando valores iguais.
+SELECT DISTINCT Nome_Prod FROM Produtos; 	--retorna coluna omitindo valores iguais.
+
+--retorna todos produtos comessados por M.
+SELECT Nome_Prod FROM Produtos WHERE Nome_Prod like "M%"; 
+--retorna todos os produtos com 4 caracteres de tamanho no nome.
+SELECT Nome_Prod FROM Produtos WHERE Nome_Prod like "____";
+--retorna todos os produtos com pelomenos 4 caracteres de tamanho no nome.
+SELECT Nome_Prod FROM Produtos WHERE Nome_Prod like "____%";
+--retorna todos os produtos que contém Marreta no nome.
+SELECT Nome_Prod FROM Produtos WHERE Nome_Prod like "%Marreta%";
 
 -- Consutando uma tabela com filtro de dados específicos E lógica.
+-- após WHERE tu podes especificar expressões lógicas complexas.
 
 SELECT Nome_Prod FROM Produtos
-WHERE ID_Prod = 101; 				--produto com id especifico.
+WHERE ID_Prod = 101; 	--produto com id especifico.
 
 SELECT Nome_Prod FROM Produtos
 WHERE ID_Prod = 101 OR Nome_Prod = "Retornar Banda Larga";
@@ -138,6 +163,22 @@ WHERE NOT ID_Prod = 101;
 
 SELECT Nome_Prod FROM Produtos
 WHERE ID_Prod >= 101 AND ( Quant_Prod >= 1  OR Preco_Prod > 50.0  );
+
+-- Cliente(id, nome,    credito, bairro)
+--         1   josé     100      a
+--         2   ana      200      a
+--         3   clinton	400      b
+--         4   marco    405      c
+
+-- considere IN como "está em..."
+SELECT nome FROM Cliente WHERE bairro IN ("a", "b");
+-- → josé ana clinton
+SELECT nome FROM Cliente WHERE bairro NOT IN ("a","b");
+-- → marco
+
+-- ordenação ascedente e descedente - alfabéticamente ou numericamente.
+SELECT nome, credito FROM Cliente ORDER BY nome DESC
+SELECT nome, credito FROM Cliente ORDER BY nome ASC
 
 -------------------------------------------UPDATE
 
@@ -153,9 +194,6 @@ WHERE ID_Prod = 100;
 
 DELETE FROM Produtos
 WHERE ID_Prod = 101; --Omissão de WHERE resulta em deleção de tudo.
-
-SELECT Nome_Prod FROM Produtos
-WHERE ID_Prod = 101;
 
 ---------------------------------------------INNER JOIN
 
@@ -180,9 +218,10 @@ ORDER BY Nome_Prod ASC; --ordem alfabética ascedente.
 
 SELECT Nome_Prod
 FROM Produtos
-ORDER BY Nome_Prod DESC; --ordem alfabética decrescente.
+ORDER BY Nome_Prod DESC; --ordem alfabética descedente.
 
 -----------------------------------------------TRUNCATE
+
 -- Apagar todos os dados de uma tabela. Não toda a tabela.
 
 TRUNCATE TABLE Produtos
@@ -211,6 +250,9 @@ CREATE USER IF NOT EXISTS "Marcolino"@"localhost" IDENTIFIED BY "senhaForte123";
 
 GRANT INSERT ON Tabela TO "Marcolino"@"localhost";
 GRANT UPDATE ( coluna1, coluna2 ) ON Tabela TO "Marcolino"@"localhost";
+
+REVOKE INSERT ON Tabela TO "Marcolino"@"loclhost";
+
 
 -- principais permissões das tabelas:
 -- ALTER, CREATE, DELETE, DROP, INSERT, SELECT, UPDATE.
