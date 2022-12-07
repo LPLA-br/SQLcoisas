@@ -165,6 +165,8 @@ DROP COLUMN Peso;
 --------------------------------------------SELECT FROM----------------------------------------
 
 --CONSULTAS
+--SELECT → o que será retornado/exibido
+--WHERE → testes lógicos.
 
 -- Efetuar consulta (query), trazendo colunas específicas.
 
@@ -173,18 +175,14 @@ SELECT Nome_Fornec FROM Fornecedores; 		--uma coluna especifica.
 SELECT Nome_Prod, Preco_Prod FROM Produtos; 	--duas colunas especificas.
 SELECT DISTINCT Nome_Prod FROM Produtos; 	--retorna coluna omitindo valores iguais.
 
---EXPRESSÕES REGULARES ESTILO SQL
---retorna todos produtos comessados por M.
-SELECT Nome_Prod FROM Produtos WHERE Nome_Prod LIKE "M%"; 
---retorna todos os produtos com 4 caracteres de tamanho no nome.
-SELECT Nome_Prod FROM Produtos WHERE Nome_Prod LIKE "____";
---retorna todos os produtos com pelomenos 4 caracteres de tamanho no nome.
-SELECT Nome_Prod FROM Produtos WHERE Nome_Prod LIKE "____%";
---retorna todos os produtos que contém Marreta no nome.
-SELECT Nome_Prod FROM Produtos WHERE Nome_Prod LIKE "%Marreta%";
 
 -- Consutando uma tabela com filtro de dados específicos E lógica.
 -- após WHERE tu podes especificar expressões lógicas complexas.
+
+------------------------------------------------------------------------
+-- IMPORTANTE: WHERE é indepedente das colunas selecionadas por SELECT--
+------------------------------------------------------------------------
+
 
 SELECT Nome_Prod FROM Produtos
 WHERE ID_Prod = 101; 	--produto com id especifico.
@@ -200,6 +198,18 @@ WHERE NOT ID_Prod = 101;
 
 SELECT Nome_Prod FROM Produtos
 WHERE ID_Prod >= 101 AND ( Quant_Prod >= 1  OR Preco_Prod > 50.0  );
+
+-----------------------------------
+--EXPRESSÕES REGULARES ESTILO SQL--
+-----------------------------------
+--retorna todos produtos comessados por M.
+SELECT Nome_Prod FROM Produtos WHERE Nome_Prod LIKE "M%"; 
+--retorna todos os produtos com 4 caracteres de tamanho no nome.
+SELECT Nome_Prod FROM Produtos WHERE Nome_Prod LIKE "____";
+--retorna todos os produtos com pelomenos 4 caracteres de tamanho no nome.
+SELECT Nome_Prod FROM Produtos WHERE Nome_Prod LIKE "____%";
+--retorna todos os produtos que contém Marreta no nome.
+SELECT Nome_Prod FROM Produtos WHERE Nome_Prod LIKE "%Marreta%";
 
 -- Cliente(id, nome,    credito, bairro)
 --         1   josé     100      a
@@ -243,8 +253,11 @@ SELECT bairro AS bandeclay FROM Cliente GROUP BY bandeclay DESC;
 -- world com tabelas: city, country, countrylanguage		  -
 -------------------------------------------------------------------
 
+-------------------------------------------------------------------
+--HAVING fuciona da mesma forma que WHERE			 --
+-------------------------------------------------------------------
+
 --retorna o número de cidades por 'distrito'
--- HAVING
 SELECT CountryCode, District, count(Name) AS NumeroDeCidadesPorDistrito
 FROM city GROUP BY District HAVING CountryCode = 'BRA' ORDER BY NumeroDeCidadesPorDistrito DESC;
 
@@ -258,6 +271,10 @@ SELECT Language, count(CountyCode) FROM countrylanguage GROUP BY Language;
 SELECT Language, count(CountyCode) FROM countrylanguage GROUP BY Language HAVING Language = "portuguese";
 --paises com mais de 50.0 porcento de falantes de português.
 
+--subconsulta: todos os paises em country que tem a população menor que a cidade de são paulo
+SELECT Name, Population FROM country WHERE 
+Population < (SELECT Population FROM city WHERE Name = 'São paulo')
+ORDER BY Population DESC; 
 
 -------------------------------------------UPDATE----------------------------------------
 
