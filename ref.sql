@@ -318,6 +318,7 @@ DROP DATABASE IF EXISTS Supermercado;
 -- localhost = 127.0.0.1
 
 CREATE USER IF NOT EXISTS "Marcolino"@"localhost" IDENTIFIED BY "senhaForte123";
+ALTER USER 'fulano'@'localhost' IDENTIFIED BY 'novaSenha123';
 
 -- GRANT in Tables for a user.
 -- USE banco; para poder dar permissões de tabela abaixo ao novo usuário
