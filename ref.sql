@@ -29,8 +29,8 @@
 --	GREATEST		Retorna o maior argumento
 --	LEAST			Retorna o menor argumento
 --	IS			é (pode ser negado)
---	IS NULL			é núlo ?
---				em ...
+--	IS NULL			é núlo ATENÇÃO Única forma de testar se é NULL
+--	IN			em ...
 
 -- OPERADORES LÓGICOS
 --	!	NOT
@@ -248,6 +248,10 @@ ORDER BY Nome_Prod DESC; --ordem alfabética descedente.
 SELECT bairro AS bandeclay FROM Cliente GROUP BY bandeclay ASC;
 SELECT bairro AS bandeclay FROM Cliente GROUP BY bandeclay DESC;
 
+--IS ou NOT IS
+SELECT * FROM Tabelinha WHERE Valor IS NULL;
+SELECT * FROM Tabelinha WHERE Valor IS NOT NULLPD;
+
 -------------------------------------------------------------------
 -- TESTADOS NO MARIADB com o banco de dados demostrativo do mysql:-
 -- world com tabelas: city, country, countrylanguage		  -
@@ -271,12 +275,11 @@ SELECT Language, count(CountyCode) FROM countrylanguage GROUP BY Language;
 SELECT Language, count(CountyCode) FROM countrylanguage GROUP BY Language HAVING Language = "portuguese";
 --paises com mais de 50.0 porcento de falantes de português.
 
---subconsulta: todos os paises em country que tem a população menor que a cidade de são paulo
-SELECT Name, Population FROM country WHERE 
-Population < (SELECT Population FROM city WHERE Name = 'São paulo')
-ORDER BY Population DESC; 
+--subconsulta: veja nested.sql
 
 -------------------------------------------UPDATE----------------------------------------
+
+--UPDATE tables SET atributo = valor WHERE condição_lógica;
 
 -- Alterar um registro na tabela: UPDATE
 
